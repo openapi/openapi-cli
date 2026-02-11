@@ -1,5 +1,5 @@
 [package]
-name = "openapi-cli"
+name = "openapi-cli-rs"
 version = "0.1.0"
 license = "MIT"
 authors = ["Francesco Bianco (@francescobianco)", "Openapi® <hello@openapi.com>"]
