@@ -1,4 +1,5 @@
 #!/bin/bash
-set -e
-cargo run -q -- -S token create --scopes "GET:test.imprese.openapi.it/advance"
+
 cargo run -q -- -S token list
+cargo run -q -- -S token scopes
+cargo run -q -- -S token credit

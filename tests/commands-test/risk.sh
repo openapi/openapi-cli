@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
-cargo run -q -- -S risk report --tax-code "12345678901"
-cargo run -q -- -S risk person --fiscal-code "RSSMRA85M01H501Z"
-cargo run -q -- -S risk list --limit 5
+
+cargo run -q -- -S risk verify-cf --fiscal-code "RSSMRA85M01H501Z"
+cargo run -q -- -S risk report-persona
+cargo run -q -- -S risk report-azienda

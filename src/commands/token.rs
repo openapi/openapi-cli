@@ -3,6 +3,7 @@ use clap::Subcommand;
 use serde_json::json;
 
 use crate::client::ApiClient;
+use crate::scopes;
 
 const PROD: &str = "https://oauth.openapi.it";
 const SANDBOX: &str = "https://test.oauth.openapi.it";
@@ -11,7 +12,7 @@ const SANDBOX: &str = "https://test.oauth.openapi.it";
 pub enum TokenCommands {
     /// Create a new API token
     Create {
-        /// Comma-separated list of scopes (e.g. "GET:test.imprese.openapi.it/advance")
+        /// Comma-separated list of scopes or aliases (e.g. "sms,company" or "post:sms")
         #[arg(long)]
         scopes: String,
     },
@@ -32,9 +33,25 @@ pub enum TokenCommands {
 pub async fn execute(cmd: &TokenCommands, client: &ApiClient) -> Result<()> {
     let base = client.base_url(PROD, SANDBOX);
     match cmd {
-        TokenCommands::Create { scopes } => {
-            let scopes_list: Vec<&str> = scopes.split(',').map(|s| s.trim()).collect();
-            let body = json!({ "scopes": scopes_list });
+        TokenCommands::Create { scopes: scopes_input } => {
+            // Fetch all available scopes to expand aliases
+            let all_scopes = fetch_all_scopes(client, base).await?;
+            let expanded = scopes::expand_aliases(scopes_input, &all_scopes, client.sandbox);
+
+            if expanded.is_empty() {
+                anyhow::bail!(
+                    "No scopes matched. Use 'openapi token scopes' to list available scopes, \
+                     or check USAGE.md for alias documentation."
+                );
+            }
+
+            println!("Creating token with {} scope(s):", expanded.len());
+            for s in &expanded {
+                println!("  {}", s);
+            }
+            println!();
+
+            let body = json!({ "scopes": expanded });
             let resp = client.post(&format!("{}/token", base), &body).await?;
             println!("{}", serde_json::to_string_pretty(&resp)?);
         }
@@ -56,4 +73,22 @@ pub async fn execute(cmd: &TokenCommands, client: &ApiClient) -> Result<()> {
         }
     }
     Ok(())
+}
+
+/// Fetch all available scopes from the OAuth API.
+async fn fetch_all_scopes(client: &ApiClient, base: &str) -> Result<Vec<String>> {
+    let resp = client.get(&format!("{}/scopes", base)).await?;
+
+    // The response can be { "data": ["scope1", ...] } or { "data": { "data": ["scope1", ...] } }
+    let scopes_array = resp["data"]
+        .as_array()
+        .or_else(|| resp["data"]["data"].as_array());
+
+    match scopes_array {
+        Some(arr) => Ok(arr
+            .iter()
+            .filter_map(|v| v.as_str().map(String::from))
+            .collect()),
+        None => anyhow::bail!("Unexpected response format from /scopes endpoint"),
+    }
 }
