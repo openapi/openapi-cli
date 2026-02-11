@@ -57,7 +57,7 @@ oas-download:
 			echo "  WARNING: failed to download $$url — check the URL in oas/urls.txt" >&2; \
 			errors=$$((errors + 1)); \
 		fi; \
-	done < oas/urls.txt; \
+	done < oas/00-oas-list.txt; \
 	echo ""; \
 	if [ $$errors -gt 0 ]; then \
 		echo "Done with $$errors warning(s). Fix the URLs above in oas/urls.txt and re-run."; \
