@@ -2,10 +2,15 @@
 name = "openapi-cli"
 version = "0.1.0"
 license = "MIT"
+authors = ["Francesco Bianco (@francescobianco)", "Openapi® <hello@openapi.com>"]
 edition = "2024"
 description = "CLI client for Openapi.com APIs"
 readme = "docs/crates-io.md"
 repository = "https://github.com/openapi/openapi-cli"
+categories = ["api-bindings", "web-programming", "asynchronous", "authentication", "development-tools"]
+documentation = "https://console.openapi.com/"
+homepage = "https://openapi.com/"
+keywords = ["openapi", "sdk", "client"]
 
 [dependencies]
 clap = { version = "4", features = ["derive", "env"] }
