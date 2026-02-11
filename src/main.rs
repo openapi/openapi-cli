@@ -2,6 +2,7 @@ mod cli;
 mod client;
 mod commands;
 mod config;
+mod scopes;
 
 use anyhow::Result;
 use clap::Parser;
@@ -15,7 +16,7 @@ async fn main() -> Result<()> {
     let cli = Cli::parse();
 
     if let Commands::Info = &cli.command {
-        return commands::info::execute();
+        return commands::info::execute().await;
     }
 
     let config = Config::load(cli.sandbox)?;

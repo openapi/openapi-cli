@@ -15,7 +15,7 @@ impl ApiClient {
         headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
         headers.insert(
             AUTHORIZATION,
-            HeaderValue::from_str(&format!("Bearer {}", config.api_key))?,
+            HeaderValue::from_str(&format!("Bearer {}", config.token))?,
         );
 
         let http = reqwest::Client::builder()
@@ -29,7 +29,7 @@ impl ApiClient {
     }
 
     /// Pick the right base URL depending on sandbox mode
-    pub fn base_url(&self, production: &str, sandbox: &str) -> &str {
+    pub fn base_url<'a>(&self, production: &'a str, sandbox: &'a str) -> &'a str {
         if self.sandbox { sandbox } else { production }
     }
 
@@ -45,16 +45,6 @@ impl ApiClient {
 
     pub async fn post(&self, url: &str, body: &Value) -> Result<Value> {
         let resp = self.http.post(url).json(body).send().await?;
-        let status = resp.status();
-        let body: Value = resp.json().await?;
-        if !status.is_success() {
-            anyhow::bail!("API error ({}): {}", status, body);
-        }
-        Ok(body)
-    }
-
-    pub async fn put(&self, url: &str, body: &Value) -> Result<Value> {
-        let resp = self.http.put(url).json(body).send().await?;
         let status = resp.status();
         let body: Value = resp.json().await?;
         if !status.is_success() {

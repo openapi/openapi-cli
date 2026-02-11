@@ -2,36 +2,25 @@ use anyhow::{bail, Result};
 
 #[derive(Debug, Clone)]
 pub struct Config {
-    pub username: String,
-    pub api_key: String,
+    pub token: String,
     pub sandbox: bool,
 }
 
 impl Config {
     pub fn load(sandbox: bool) -> Result<Self> {
-        let username = std::env::var("OPENAPI_USERNAME")
-            .map_err(|_| anyhow::anyhow!("OPENAPI_USERNAME environment variable not set"))?;
-
-        let api_key = if sandbox {
-            std::env::var("OPENAPI_SANDBOX_KEY").map_err(|_| {
-                anyhow::anyhow!("OPENAPI_SANDBOX_KEY environment variable not set")
+        let token = if sandbox {
+            std::env::var("OPENAPI_SANDBOX_TOKEN").map_err(|_| {
+                anyhow::anyhow!("OPENAPI_SANDBOX_TOKEN environment variable not set")
             })?
         } else {
-            std::env::var("OPENAPI_KEY")
-                .map_err(|_| anyhow::anyhow!("OPENAPI_KEY environment variable not set"))?
+            std::env::var("OPENAPI_TOKEN")
+                .map_err(|_| anyhow::anyhow!("OPENAPI_TOKEN environment variable not set"))?
         };
 
-        if username.is_empty() {
-            bail!("OPENAPI_USERNAME cannot be empty");
-        }
-        if api_key.is_empty() {
-            bail!("API key cannot be empty");
+        if token.is_empty() {
+            bail!("Token cannot be empty");
         }
 
-        Ok(Self {
-            username,
-            api_key,
-            sandbox,
-        })
+        Ok(Self { token, sandbox })
     }
 }
