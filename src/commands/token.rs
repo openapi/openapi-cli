@@ -2,11 +2,8 @@ use anyhow::Result;
 use clap::Subcommand;
 use serde_json::json;
 
-use crate::client::ApiClient;
+use crate::client::OAuthClient;
 use crate::scopes;
-
-const PROD: &str = "https://oauth.openapi.it";
-const SANDBOX: &str = "https://test.oauth.openapi.it";
 
 #[derive(Debug, Subcommand)]
 pub enum TokenCommands {
@@ -30,12 +27,12 @@ pub enum TokenCommands {
     Credit,
 }
 
-pub async fn execute(cmd: &TokenCommands, client: &ApiClient) -> Result<()> {
-    let base = client.base_url(PROD, SANDBOX);
+pub async fn execute(cmd: &TokenCommands, client: &OAuthClient) -> Result<()> {
+    let base = client.base_url();
     match cmd {
         TokenCommands::Create { scopes: scopes_input } => {
             // Fetch all available scopes to expand aliases
-            let all_scopes = fetch_all_scopes(client, base).await?;
+            let all_scopes = fetch_all_scopes(client).await?;
             let expanded = scopes::expand_aliases(scopes_input, &all_scopes, client.sandbox);
 
             if expanded.is_empty() {
@@ -76,7 +73,8 @@ pub async fn execute(cmd: &TokenCommands, client: &ApiClient) -> Result<()> {
 }
 
 /// Fetch all available scopes from the OAuth API.
-async fn fetch_all_scopes(client: &ApiClient, base: &str) -> Result<Vec<String>> {
+async fn fetch_all_scopes(client: &OAuthClient) -> Result<Vec<String>> {
+    let base = client.base_url();
     let resp = client.get(&format!("{}/scopes", base)).await?;
 
     // The response can be { "data": ["scope1", ...] } or { "data": { "data": ["scope1", ...] } }

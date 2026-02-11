@@ -8,8 +8,8 @@ use anyhow::Result;
 use clap::Parser;
 
 use cli::{Cli, Commands};
-use client::ApiClient;
-use config::Config;
+use client::{ApiClient, OAuthClient};
+use config::{Config, OAuthConfig};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -19,11 +19,18 @@ async fn main() -> Result<()> {
         return commands::info::execute().await;
     }
 
+    // Token management uses Basic auth (OPENAPI_USERNAME + OPENAPI_KEY)
+    if let Commands::Token { command } = &cli.command {
+        let oauth_config = OAuthConfig::load(cli.sandbox)?;
+        let oauth_client = OAuthClient::new(oauth_config)?;
+        return commands::token::execute(command, &oauth_client).await;
+    }
+
+    // All other commands use Bearer auth (OPENAPI_TOKEN)
     let config = Config::load(cli.sandbox)?;
     let client = ApiClient::new(config)?;
 
     match &cli.command {
-        Commands::Token { command } => commands::token::execute(command, &client).await,
         Commands::Company { command } => commands::company::execute(command, &client).await,
         Commands::Sms { command } => commands::sms::execute(command, &client).await,
         Commands::Esignature { command } => commands::esignature::execute(command, &client).await,
@@ -60,6 +67,6 @@ async fn main() -> Result<()> {
         }
         Commands::Domains { command } => commands::domains::execute(command, &client).await,
         Commands::Sdi { command } => commands::sdi::execute(command, &client).await,
-        Commands::Info => unreachable!(),
+        Commands::Info | Commands::Token { .. } => unreachable!(),
     }
 }
