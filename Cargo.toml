@@ -1,0 +1,17 @@
+[package]
+name = "openapi-cli"
+version = "0.1.0"
+edition = "2024"
+description = "CLI client for Openapi.com APIs"
+
+[dependencies]
+clap = { version = "4", features = ["derive", "env"] }
+reqwest = { version = "0.12", features = ["json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+
+[[bin]]
+name = "openapi"
+path = "src/main.rs"
