@@ -32,13 +32,13 @@ Before using the CLI, you need:
 Install from crates.io:
 
 ```bash
-cargo install openapi-cli
+cargo install openapi-cli-rs
 ```
 
 Or add it to your project:
 
 ```bash
-cargo add openapi-cli
+cargo add openapi-cli-rs
 ```
 
 
