@@ -1,73 +1,105 @@
 use anyhow::Result;
-use reqwest::header::{HeaderValue, AUTHORIZATION, CONTENT_TYPE};
-use serde_json::Value;
 
+use crate::client::OAuthClient;
+use crate::config::OAuthConfig;
 use crate::scopes;
 
 pub async fn execute() -> Result<()> {
     println!("openapi-cli v{}", env!("CARGO_PKG_VERSION"));
     println!();
 
+    // OAuth credentials (Basic auth — for token management)
+    let username = std::env::var("OPENAPI_USERNAME").ok();
+    let key = std::env::var("OPENAPI_KEY").ok();
+    let sandbox_key = std::env::var("OPENAPI_SANDBOX_KEY").ok();
+
+    // Bearer tokens (for service API commands)
     let token = std::env::var("OPENAPI_TOKEN").ok();
     let sandbox_token = std::env::var("OPENAPI_SANDBOX_TOKEN").ok();
 
+    let has_username = username.as_ref().is_some_and(|v| !v.is_empty());
+    let has_key = key.as_ref().is_some_and(|v| !v.is_empty());
+    let has_sandbox_key = sandbox_key.as_ref().is_some_and(|v| !v.is_empty());
     let has_token = token.as_ref().is_some_and(|v| !v.is_empty());
     let has_sandbox_token = sandbox_token.as_ref().is_some_and(|v| !v.is_empty());
 
     // Show variable status
     println!("Environment variables:");
-    print_var_status("OPENAPI_TOKEN", has_token, &token);
-    print_var_status("OPENAPI_SANDBOX_TOKEN", has_sandbox_token, &sandbox_token);
+    println!("  OAuth credentials (token management):");
+    print_var_status("  OPENAPI_USERNAME", has_username, &username);
+    print_var_status("  OPENAPI_KEY", has_key, &key);
+    print_var_status("  OPENAPI_SANDBOX_KEY", has_sandbox_key, &sandbox_key);
+    println!("  Bearer tokens (service API commands):");
+    print_var_status("  OPENAPI_TOKEN", has_token, &token);
+    print_var_status("  OPENAPI_SANDBOX_TOKEN", has_sandbox_token, &sandbox_token);
     println!();
 
-    // Readiness assessment
-    if has_token && has_sandbox_token {
-        println!("Status: READY");
-        println!("  Production and sandbox environments are both available.");
-    } else if has_token {
-        println!("Status: READY (production only)");
-        println!("  Production environment is available.");
-        println!("  Set OPENAPI_SANDBOX_TOKEN to enable sandbox mode (-S).");
-    } else if has_sandbox_token {
-        println!("Status: SANDBOX ONLY");
-        println!("  Only the sandbox environment is available (use -S flag).");
-        println!("  Set OPENAPI_TOKEN to enable production mode.");
+    // Readiness for token management (Basic auth)
+    let oauth_ready = has_username && has_key;
+    let oauth_sandbox_ready = has_username && has_sandbox_key;
+
+    if oauth_ready || oauth_sandbox_ready {
+        print!("Token management: ");
+        if oauth_ready && oauth_sandbox_ready {
+            println!("READY (production + sandbox)");
+        } else if oauth_ready {
+            println!("READY (production only)");
+        } else {
+            println!("READY (sandbox only)");
+        }
     } else {
-        println!("Status: NOT CONFIGURED");
-        println!("  The CLI cannot operate. Set the required environment variables:");
-        println!("    export OPENAPI_TOKEN=\"your-api-token\"");
-        println!("    export OPENAPI_SANDBOX_TOKEN=\"your-sandbox-token\"  (optional)");
+        println!("Token management: NOT CONFIGURED");
+        println!("  Set OPENAPI_USERNAME + OPENAPI_KEY to manage tokens.");
     }
 
-    // Show token scopes if tokens are available
-    if has_token {
-        println!();
-        println!("Production token scopes:");
-        match fetch_token_scopes(token.as_ref().unwrap(), false).await {
-            Ok(token_scopes) if token_scopes.is_empty() => {
-                println!("  (no scopes)");
-            }
-            Ok(token_scopes) => {
-                print!("{}", scopes::group_scopes_by_service(&token_scopes, false));
-            }
-            Err(e) => {
-                println!("  Unable to retrieve ({})", e);
+    // Readiness for service commands (Bearer auth)
+    if has_token || has_sandbox_token {
+        print!("Service commands:  ");
+        if has_token && has_sandbox_token {
+            println!("READY (production + sandbox)");
+        } else if has_token {
+            println!("READY (production only)");
+        } else {
+            println!("READY (sandbox only)");
+        }
+    } else {
+        println!("Service commands:  NOT CONFIGURED");
+        println!("  Set OPENAPI_TOKEN to use service commands (sms, company, etc.).");
+    }
+
+    // Show token scopes using OAuth Basic auth
+    if oauth_ready {
+        if has_token {
+            println!();
+            println!("Production token scopes:");
+            match fetch_token_scopes_via_oauth(false, token.as_ref().unwrap()).await {
+                Ok(token_scopes) if token_scopes.is_empty() => {
+                    println!("  (no scopes)");
+                }
+                Ok(token_scopes) => {
+                    print!("{}", scopes::group_scopes_by_service(&token_scopes, false));
+                }
+                Err(e) => {
+                    println!("  Unable to retrieve ({})", e);
+                }
             }
         }
     }
 
-    if has_sandbox_token {
-        println!();
-        println!("Sandbox token scopes:");
-        match fetch_token_scopes(sandbox_token.as_ref().unwrap(), true).await {
-            Ok(token_scopes) if token_scopes.is_empty() => {
-                println!("  (no scopes)");
-            }
-            Ok(token_scopes) => {
-                print!("{}", scopes::group_scopes_by_service(&token_scopes, true));
-            }
-            Err(e) => {
-                println!("  Unable to retrieve ({})", e);
+    if oauth_sandbox_ready {
+        if has_sandbox_token {
+            println!();
+            println!("Sandbox token scopes:");
+            match fetch_token_scopes_via_oauth(true, sandbox_token.as_ref().unwrap()).await {
+                Ok(token_scopes) if token_scopes.is_empty() => {
+                    println!("  (no scopes)");
+                }
+                Ok(token_scopes) => {
+                    print!("{}", scopes::group_scopes_by_service(&token_scopes, true));
+                }
+                Err(e) => {
+                    println!("  Unable to retrieve ({})", e);
+                }
             }
         }
     }
@@ -75,36 +107,17 @@ pub async fn execute() -> Result<()> {
     Ok(())
 }
 
-async fn fetch_token_scopes(token: &str, sandbox: bool) -> Result<Vec<String>> {
-    let base = if sandbox {
-        "https://test.oauth.openapi.it"
-    } else {
-        "https://oauth.openapi.it"
-    };
+/// Fetch scopes for a specific token using OAuth Basic auth.
+async fn fetch_token_scopes_via_oauth(sandbox: bool, token: &str) -> Result<Vec<String>> {
+    let oauth_config = OAuthConfig::load(sandbox)?;
+    let oauth_client = OAuthClient::new(oauth_config)?;
+    let base = oauth_client.base_url();
     let url = format!("{}/token/{}", base, token);
 
-    let mut headers = reqwest::header::HeaderMap::new();
-    headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
-    headers.insert(
-        AUTHORIZATION,
-        HeaderValue::from_str(&format!("Bearer {}", token))?,
-    );
-
-    let client = reqwest::Client::builder()
-        .default_headers(headers)
-        .build()?;
-
-    let resp = client.get(&url).send().await?;
-    let status = resp.status();
-    let body: Value = resp.json().await?;
-
-    if !status.is_success() {
-        let msg = body["message"].as_str().unwrap_or("unknown error");
-        anyhow::bail!("{}", msg);
-    }
+    let resp = oauth_client.get(&url).await?;
 
     // Response: { "data": [{ "scopes": [...], "token": "...", "expire": ... }], "success": true }
-    let scopes = body["data"]
+    let scopes = resp["data"]
         .as_array()
         .and_then(|arr| arr.first())
         .and_then(|entry| entry["scopes"].as_array())
