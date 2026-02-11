@@ -32,14 +32,17 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 ## ==============
-## Git Operations
+## Dev Operations
 ## ==============
 
-push:
+dev-push:
 	@git config credential.helper 'cache --timeout=3600'
 	@git add .
 	@git commit -am "Updated at $$(date)" || true
 	@git push
+
+dev-version:
+	@grep '^version' Cargo.toml | head -n1 | cut -d '"' -f2
 
 ## ==================
 ## OAS Specifications
@@ -77,6 +80,17 @@ release:
 
 install:
 	@cargo install --path .
+
+## ==================
+## Packaging Commands
+## ==================
+
+publish:
+	@git add .
+	@git commit -m "Update release $$(make -s dev-version)" || true
+	@git push
+	@cargo login
+	@cargo publish
 
 ## =======
 ## Testing
