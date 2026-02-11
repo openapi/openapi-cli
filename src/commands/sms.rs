@@ -42,7 +42,7 @@ pub async fn execute(cmd: &SmsCommands, client: &ApiClient) -> Result<()> {
             sender,
         } => {
             let mut body = json!({
-                "to": to,
+                "recipient": to,
                 "message": message,
             });
             if let Some(s) = sender {
