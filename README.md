@@ -3,7 +3,7 @@
     <img alt="Openapi CLI" src=".github/assets/images/repo-header-a4.png" >
   </a>
 
-  <h1>Openapi® CLI</h1>
+  <h1>🔐 Openapi® CLI</h1>
   <h4>The command-line interface to interact with <a href="https://openapi.com/">Openapi®</a> APIs directly from your terminal</h4>
 
 [![Build Status](https://github.com/openapi/openapi-cli/actions/workflows/rust.yml/badge.svg)](https://github.com/openapi/openapi-cli/actions/workflows/rust.yml)
