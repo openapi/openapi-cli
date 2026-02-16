@@ -7,7 +7,7 @@
   <h4>The command-line interface to interact with <a href="https://openapi.com/">Openapi®</a> APIs directly from your terminal</h4>
 
 [![Build Status](https://github.com/openapi/openapi-cli/actions/workflows/rust.yml/badge.svg)](https://github.com/openapi/openapi-cli/actions/workflows/rust.yml)
-[![License](https://img.shields.io/github/license/openapi/openapi-cli?v=2)](LICENSE)
+[![License](https://img.shields.io/github/license/openapi/openapi-cli?ts=1771243284)](LICENSE)
 [![Rust Version](https://img.shields.io/badge/rust-2024_edition-orange.svg)](https://www.rust-lang.org/)
 </div>
 
