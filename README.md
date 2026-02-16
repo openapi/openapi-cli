@@ -13,13 +13,13 @@
 
 ## Overview
 
-A command-line client for the APIs available at [Openapi](https://openapi.com).
+A command-line client for the APIs available at [Openapi®](https://openapi.com).
 It provides direct terminal access to the Openapi Marketplace, including token management, scope aliases, and sandbox support.
 With this CLI you can quickly interact with hundreds of certified APIs and accelerate your digital transformation projects.
 
 ## Pre-requisites
 
-Before using the Openapi CLI, you will need an account at [Openapi](https://console.openapi.com/) and an API key to the sandbox and/or production environment.
+Before using the Openapi CLI, you will need an account at [Openapi®](https://console.openapi.com/) and an API key to the sandbox and/or production environment.
 
 ## What you can do
 
@@ -32,7 +32,7 @@ With the Openapi CLI, you can easily interact with a variety of services in the 
 - Manage certified emails and legal communications via Italian Legalmail
 - Query company data, risk reports, automotive records, and more
 
-For a complete list of all available services, check out the [Openapi Marketplace](https://console.openapi.com/).
+For a complete list of all available services, check out the [Openapi® Marketplace](https://console.openapi.com/).
 
 ## Installation
 
