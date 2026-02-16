@@ -14,7 +14,7 @@
 ## Overview
 
 A command-line client for the APIs available at [Openapi®](https://openapi.com).
-It provides direct terminal access to the Openapi Marketplace, including token management, scope aliases, and sandbox support.
+It provides direct terminal access to the Openapi® Marketplace, including token management, scope aliases, and sandbox support.
 With this CLI you can quickly interact with hundreds of certified APIs and accelerate your digital transformation projects.
 
 ## Pre-requisites
