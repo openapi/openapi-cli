@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://openapi.com/">
-    <img alt="Openapi CLI" src=".github/assets/repo-header-a3.png" >
+    <img alt="Openapi CLI" src=".github/assets/images/repo-header-a4.png" >
   </a>
 
   <h1>Openapi® CLI</h1>
