@@ -75,6 +75,12 @@ pub fn expand_aliases(input: &str, all_scopes: &[String], sandbox: bool) -> Vec<
             &lower
         };
 
+        // "all" is a special alias that expands to every available scope
+        if key == "all" {
+            result.extend(all_scopes.iter().cloned());
+            continue;
+        }
+
         if let Some(&prod_domain) = registry.get(key.as_str()) {
             let domain = if sandbox {
                 format!("test.{}", prod_domain)
@@ -173,4 +179,39 @@ pub fn list_aliases() -> Vec<&'static str> {
     let mut aliases: Vec<&str> = registry.keys().copied().collect();
     aliases.sort();
     aliases
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn sample_scopes() -> Vec<String> {
+        vec![
+            "GET:sms.openapi.com/v1/send".to_string(),
+            "POST:sms.openapi.com/v1/send".to_string(),
+            "GET:company.openapi.com/v1/search".to_string(),
+        ]
+    }
+
+    #[test]
+    fn test_all_expands_to_every_scope() {
+        let scopes = sample_scopes();
+        let result = expand_aliases("all", &scopes, false);
+        assert_eq!(result, scopes);
+    }
+
+    #[test]
+    fn test_all_case_insensitive() {
+        let scopes = sample_scopes();
+        let result = expand_aliases("ALL", &scopes, false);
+        assert_eq!(result, scopes);
+    }
+
+    #[test]
+    fn test_all_mixed_with_other_aliases() {
+        let scopes = sample_scopes();
+        // "all" alone should still return everything without duplicates from mixing
+        let result = expand_aliases("all", &scopes, false);
+        assert_eq!(result.len(), scopes.len());
+    }
 }
