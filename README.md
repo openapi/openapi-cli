@@ -129,6 +129,7 @@ Each API service is mapped to an alias name. When you use an alias, it automatic
 
 | Alias | Service | Domain |
 |---|---|---|
+| `all` | **All services** _(special keyword)_ | — |
 | `ai` | AI language models | ai.openapi.com |
 | `automotive` | Automotive data | automotive.openapi.com |
 | `cadastre` | Italian cadastral data | catasto.openapi.it |
@@ -163,6 +164,9 @@ openapi token create --scopes "sms"
 
 # Multiple services
 openapi token create --scopes "sms,company"
+
+# All available scopes (special keyword)
+openapi token create --scopes "all"
 ```
 
 ### Method filtering
