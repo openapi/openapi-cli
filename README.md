@@ -279,6 +279,13 @@ Meet our partners using Openapi or contributing to this project:
 - [QOMODO S.R.L.](https://www.qomodo.me/)
 - [SOUNDREEF S.P.A.](https://www.soundreef.com/)
 
+## Our Commitments
+
+We believe in open source and we act on that belief. We became Silver Members 
+of the Linux Foundation because we wanted to formally support the ecosystem 
+we build on every day. Open standards, open collaboration, and open governance 
+are part of how we work and how we think about software.
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
