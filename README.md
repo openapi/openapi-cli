@@ -10,6 +10,8 @@
 [![Crates.io](https://img.shields.io/crates/v/openapi-cli-rs.svg)](https://crates.io/crates/openapi-cli-rs)
 [![License](https://img.shields.io/github/license/openapi/openapi-cli?ts=1771243284)](LICENSE)
 [![Rust Version](https://img.shields.io/badge/rust-2024_edition-orange.svg)](https://www.rust-lang.org/)
+<br>
+[![Linux Foundation Member](https://img.shields.io/badge/Linux%20Foundation-Silver%20Member-003778?logo=linux-foundation&logoColor=white)](https://www.linuxfoundation.org/about/members)
 </div>
 
 ## Overview
