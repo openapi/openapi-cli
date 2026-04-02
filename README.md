@@ -36,6 +36,7 @@ With the Openapi CLI, you can easily interact with a variety of services in the 
 - Query company data, risk reports, automotive records, and more
 
 For a complete list of all available services, check out the [Openapi® Marketplace](https://console.openapi.com/).
+There is also a small terminal easter egg available through `openapi --who`.
 
 ## Installation
 

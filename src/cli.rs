@@ -14,8 +14,12 @@ pub struct Cli {
     #[arg(short = 'S', long, global = true)]
     pub sandbox: bool,
 
+    /// Discover who you are
+    #[arg(long, global = true)]
+    pub who: bool,
+
     #[command(subcommand)]
-    pub command: Commands,
+    pub command: Option<Commands>,
 }
 
 #[derive(Debug, Subcommand)]

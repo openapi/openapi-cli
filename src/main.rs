@@ -5,7 +5,7 @@ mod config;
 mod scopes;
 
 use anyhow::Result;
-use clap::Parser;
+use clap::{CommandFactory, Parser};
 
 use cli::{Cli, Commands};
 use client::{ApiClient, OAuthClient};
@@ -15,12 +15,23 @@ use config::{Config, OAuthConfig};
 async fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    if let Commands::Info = &cli.command {
+    if cli.who {
+        billy_ray::run()?;
+        return Ok(());
+    }
+
+    let Some(command) = &cli.command else {
+        Cli::command().print_help()?;
+        println!();
+        return Ok(());
+    };
+
+    if let Commands::Info = command {
         return commands::info::execute().await;
     }
 
     // Token management uses Basic auth (OPENAPI_USERNAME + OPENAPI_KEY)
-    if let Commands::Token { command } = &cli.command {
+    if let Commands::Token { command } = command {
         let oauth_config = OAuthConfig::load(cli.sandbox)?;
         let oauth_client = OAuthClient::new(oauth_config)?;
         return commands::token::execute(command, &oauth_client).await;
@@ -30,7 +41,7 @@ async fn main() -> Result<()> {
     let config = Config::load(cli.sandbox)?;
     let client = ApiClient::new(config)?;
 
-    match &cli.command {
+    match command {
         Commands::Esignature { command } => commands::esignature::execute(command, &client).await,
         Commands::Ai { command } => commands::ai::execute(command, &client).await,
         Commands::Sms { command } => commands::sms::execute(command, &client).await,
