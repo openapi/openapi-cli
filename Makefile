@@ -15,7 +15,7 @@
 #   ═══════════════════════════════════════════════════════════════════════   #
 #                                                                             #
 #   Project:        repokit                                                   #
-#   Version:        0.1.0                                                     #
+#   Version:        0.1.1                                                     #
 #   Author:         Francesco Bianco (@francescobianco)                       #
 #   Copyright:      (c) 2025 Openapi®. All rights reserved.                   #
 #   License:        MIT                                                       #

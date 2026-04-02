@@ -72,9 +72,9 @@ checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
 name = "billy-ray"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96dc5c397960e59b938f6e7c324862c8a4b3adb73ce71c4e88fff214f2986b82"
+checksum = "4caaa3045c08a9dbd504264548d6b0cb9e989500c8bb7536e638241d22f1c015"
 
 [[package]]
 name = "bitflags"
@@ -729,7 +729,7 @@ checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
 name = "openapi-cli-rs"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "base64",

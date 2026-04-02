@@ -1,6 +1,6 @@
 [package]
 name = "openapi-cli-rs"
-version = "0.1.0"
+version = "0.1.1"
 license = "MIT"
 authors = ["Francesco Bianco (@francescobianco)", "Openapi® <hello@openapi.com>"]
 edition = "2024"
@@ -20,7 +20,7 @@ serde_json = "1"
 tokio = { version = "1", features = ["full"] }
 anyhow = "1"
 base64 = "0.22"
-billy-ray = "0.1.0"
+billy-ray = "0.1.1"
 
 [[bin]]
 name = "openapi"
