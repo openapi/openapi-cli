@@ -39,6 +39,12 @@ For a complete list of all available services, check out the [Openapi® Marketpl
 
 ## Installation
 
+### From crates.io
+
+```bash
+cargo install openapi-cli-rs
+```
+
 ### From source
 
 ```bash
