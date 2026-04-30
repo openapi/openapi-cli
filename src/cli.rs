@@ -25,9 +25,17 @@ pub struct Cli {
 #[derive(Debug, Subcommand)]
 pub enum Commands {
     /// OAuth token management
+    #[command(name = "oauth")]
     Token {
         #[command(subcommand)]
         command: token::TokenCommands,
+    },
+
+    /// OAuth v2 token management and analytics
+    #[command(name = "oauthv2")]
+    Oauthv2 {
+        #[command(subcommand)]
+        command: oauthv2::Oauthv2Commands,
     },
 
     /// Electronic signature
@@ -43,6 +51,7 @@ pub enum Commands {
     },
 
     /// SMS messaging (v2)
+    #[command(name = "smsv2")]
     Sms {
         #[command(subcommand)]
         command: sms::SmsCommands,
@@ -55,7 +64,7 @@ pub enum Commands {
     },
 
     /// Foreign currency exchange rates
-    #[command(name = "exchange-rate")]
+    #[command(name = "exchange")]
     ExchangeRate {
         #[command(subcommand)]
         command: exchange_rate::ExchangeRateCommands,
@@ -80,27 +89,28 @@ pub enum Commands {
     },
 
     /// Document time stamping
-    #[command(name = "time-stamping")]
+    #[command(name = "marchetemporali")]
     TimeStamping {
         #[command(subcommand)]
         command: time_stamping::TimeStampingCommands,
     },
 
     /// Real estate valuation data
-    #[command(name = "real-estate")]
+    #[command(name = "realestate")]
     RealEstate {
         #[command(subcommand)]
         command: real_estate::RealEstateCommands,
     },
 
     /// Italian cadastral data
+    #[command(name = "catasto")]
     Cadastre {
         #[command(subcommand)]
         command: cadastre::CadastreCommands,
     },
 
     /// Italian certified email (PEC / Legalmail)
-    #[command(name = "certified-email")]
+    #[command(name = "pec")]
     CertifiedEmail {
         #[command(subcommand)]
         command: certified_email::CertifiedEmailCommands,
@@ -125,14 +135,14 @@ pub enum Commands {
     },
 
     /// Massive Registered Electronic Mail
-    #[command(name = "massive-rem")]
+    #[command(name = "pecmassiva")]
     MassiveRem {
         #[command(subcommand)]
         command: massive_rem::MassiveRemCommands,
     },
 
     /// Bills payment
-    #[command(name = "paying-bills")]
+    #[command(name = "bollettini")]
     PayingBills {
         #[command(subcommand)]
         command: paying_bills::PayingBillsCommands,
@@ -145,7 +155,7 @@ pub enum Commands {
     },
 
     /// Postal mail service
-    #[command(name = "postal-service")]
+    #[command(name = "ufficiopostale")]
     PostalService {
         #[command(subcommand)]
         command: postal_service::PostalServiceCommands,
@@ -158,7 +168,7 @@ pub enum Commands {
     },
 
     /// Zip codes, municipalities, provinces, regions
-    #[command(name = "zip-codes")]
+    #[command(name = "cap")]
     ZipCodes {
         #[command(subcommand)]
         command: zip_codes::ZipCodesCommands,
@@ -171,7 +181,7 @@ pub enum Commands {
     },
 
     /// Chamber of Commerce documents
-    #[command(name = "chamber-of-commerce")]
+    #[command(name = "visurecamerali")]
     ChamberOfCommerce {
         #[command(subcommand)]
         command: chamber_of_commerce::ChamberOfCommerceCommands,

@@ -9,7 +9,7 @@ use crate::scopes;
 pub enum TokenCommands {
     /// Create a new API token
     Create {
-        /// Comma-separated list of scopes or aliases (e.g. "sms,company" or "post:sms")
+        /// Comma-separated list of scopes or aliases (e.g. "smsv2,company" or "post:smsv2")
         #[arg(long)]
         scopes: String,
     },
@@ -37,7 +37,7 @@ pub async fn execute(cmd: &TokenCommands, client: &OAuthClient) -> Result<()> {
 
             if expanded.is_empty() {
                 anyhow::bail!(
-                    "No scopes matched. Use 'openapi token scopes' to list available scopes, \
+                    "No scopes matched. Use 'openapi oauth scopes' to list available scopes, \
                      or check USAGE.md for alias documentation."
                 );
             }

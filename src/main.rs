@@ -8,7 +8,7 @@ use anyhow::Result;
 use clap::{CommandFactory, Parser};
 
 use cli::{Cli, Commands};
-use client::{ApiClient, OAuthClient};
+use client::{ApiClient, OAuthClient, OAuthV2Client};
 use config::{Config, OAuthConfig};
 
 #[tokio::main]
@@ -35,6 +35,12 @@ async fn main() -> Result<()> {
         let oauth_config = OAuthConfig::load(cli.sandbox)?;
         let oauth_client = OAuthClient::new(oauth_config)?;
         return commands::token::execute(command, &oauth_client).await;
+    }
+
+    if let Commands::Oauthv2 { command } = command {
+        let oauth_config = OAuthConfig::load(cli.sandbox)?;
+        let oauth_v2_client = OAuthV2Client::new(oauth_config)?;
+        return commands::oauthv2::execute(command, &oauth_v2_client).await;
     }
 
     // All other commands use Bearer auth (OPENAPI_TOKEN)
@@ -78,6 +84,6 @@ async fn main() -> Result<()> {
             commands::chamber_of_commerce::execute(command, &client).await
         }
         Commands::Docuengine { command } => commands::docuengine::execute(command, &client).await,
-        Commands::Info | Commands::Token { .. } => unreachable!(),
+        Commands::Info | Commands::Token { .. } | Commands::Oauthv2 { .. } => unreachable!(),
     }
 }

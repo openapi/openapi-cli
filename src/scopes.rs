@@ -4,9 +4,10 @@ use std::collections::HashMap;
 /// In sandbox mode, the domain is prefixed with "test.".
 pub fn alias_registry() -> HashMap<&'static str, &'static str> {
     HashMap::from([
-        ("token", "oauth.openapi.it"),
+        ("oauth", "oauth.openapi.it"),
+        ("oauthv2", "oauth.openapi.com"),
         ("company", "company.openapi.com"),
-        ("sms", "sms.openapi.com"),
+        ("smsv2", "sms.openapi.com"),
         ("esignature", "esignature.openapi.com"),
         ("risk", "risk.openapi.com"),
         ("ai", "ai.openapi.com"),
@@ -15,18 +16,18 @@ pub fn alias_registry() -> HashMap<&'static str, &'static str> {
         ("invoice", "invoice.openapi.com"),
         ("automotive", "automotive.openapi.com"),
         ("docuengine", "docuengine.openapi.com"),
-        ("chamber-of-commerce", "visurecamerali.openapi.it"),
-        ("real-estate", "realestate.openapi.com"),
-        ("zip-codes", "cap.openapi.it"),
+        ("visurecamerali", "visurecamerali.openapi.it"),
+        ("realestate", "realestate.openapi.com"),
+        ("cap", "cap.openapi.it"),
         ("visengine", "visengine2.altravia.com"),
-        ("cadastre", "catasto.openapi.it"),
-        ("postal-service", "ws.ufficiopostale.com"),
-        ("massive-rem", "ws.pecmassiva.com"),
+        ("catasto", "catasto.openapi.it"),
+        ("ufficiopostale", "ws.ufficiopostale.com"),
+        ("pecmassiva", "ws.pecmassiva.com"),
         ("pdf", "pdf.openapi.it"),
-        ("time-stamping", "ws.marchetemporali.com"),
-        ("certified-email", "pec.openapi.it"),
-        ("paying-bills", "ws.pagasubito.it"),
-        ("exchange-rate", "exchange.altravia.com"),
+        ("marchetemporali", "ws.marchetemporali.com"),
+        ("pec", "pec.openapi.it"),
+        ("bollettini", "ws.pagasubito.it"),
+        ("exchange", "exchange.altravia.com"),
         ("domains", "domains.altravia.com"),
         ("sdi", "sdi.openapi.it"),
     ])
@@ -36,8 +37,8 @@ const HTTP_METHODS: &[&str] = &["get", "post", "put", "patch", "delete"];
 
 /// Expand scope aliases in a comma-separated scope string.
 ///
-/// - `"sms"` → all scopes whose domain matches the sms service
-/// - `"post:sms"` → only POST scopes for sms
+/// - `"smsv2"` → all scopes whose domain matches the SMS v2 service
+/// - `"post:smsv2"` → only POST scopes for SMS v2
 /// - Anything that doesn't match an alias is passed through as-is
 /// - Case insensitive
 ///

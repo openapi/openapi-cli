@@ -1,4 +1,5 @@
 https://console.openapi.com/oas/en/oauth.openapi.json
+https://console.openapi.com/oas/en/oauthv2.openapi.json
 https://console.openapi.com/oas/en/company.openapi.json
 https://console.openapi.com/oas/en/smsv2.openapi.json
 https://console.openapi.com/oas/en/esignature.openapi.json

@@ -2,14 +2,14 @@
 
 The official command-line interface to interact with **Openapi® APIs** directly from your terminal.
 
-`openapi` provides structured access to the Openapi Marketplace, including OAuth token management, scope aliases, sandbox support, and service-specific commands.
+`openapi` provides structured access to the Openapi Marketplace, including OAuth and OAuth v2 token management, scope aliases, sandbox support, and service-specific commands.
 
 
 ## Overview
 
 Openapi® CLI allows you to:
 
-* Authenticate and manage OAuth tokens
+* Authenticate and manage OAuth and OAuth v2 tokens
 * Call Openapi® services from the terminal
 * Automate workflows in scripts and CI/CD pipelines
 * Work with sandbox and production environments
@@ -49,7 +49,7 @@ The CLI relies on environment variables. There are two credential types dependin
 
 ### 1️⃣ OAuth Credentials (Token Management)
 
-Used by `openapi token` commands.
+Used by `openapi oauth` and `openapi oauthv2` commands.
 
 ```bash
 export OPENAPI_USERNAME="your-username"
@@ -57,12 +57,12 @@ export OPENAPI_KEY="your-api-key"
 export OPENAPI_SANDBOX_KEY="your-sandbox-key"   # optional
 ```
 
-These credentials are used for Basic authentication when creating or managing tokens.
+These credentials are used for Basic authentication when creating or managing OAuth and OAuth v2 tokens.
 
 
 ### 2️⃣ Bearer Tokens (Service Commands)
 
-Used by service commands like `sms`, `company`, `risk`, etc.
+Used by service commands like `smsv2`, `company`, `risk`, etc.
 
 ```bash
 export OPENAPI_TOKEN="your-bearer-token"
@@ -72,7 +72,13 @@ export OPENAPI_SANDBOX_TOKEN="your-sandbox-token"   # optional
 Tokens are generated using:
 
 ```bash
-openapi token create --scopes "sms"
+openapi oauth create --scopes "smsv2"
+```
+
+or
+
+```bash
+openapi oauthv2 tokens create --scopes "smsv2"
 ```
 
 
@@ -96,8 +102,8 @@ This displays:
 Use `-S` or `--sandbox` to target sandbox environments:
 
 ```bash
-openapi -S sms send --to "+391234567890" --message "Test"
-openapi -S token list
+openapi -S smsv2 send --to "+391234567890" --message "Test"
+openapi -S oauth list
 ```
 
 
@@ -105,22 +111,28 @@ openapi -S token list
 
 ```bash
 # List active tokens
-openapi token list
+openapi oauth list
 
 # List all available scopes
-openapi token scopes
+openapi oauth scopes
 
 # Create a new token
-openapi token create --scopes "sms,company"
+openapi oauth create --scopes "smsv2,company"
 
 # Filter by HTTP method
-openapi token create --scopes "post:sms,get:company"
+openapi oauth create --scopes "post:smsv2,get:company"
 
 # Check credit
-openapi token credit
+openapi oauth credit
 
 # Revoke a token
-openapi token revoke --token "token-id"
+openapi oauth revoke --token "token-id"
+
+# OAuth v2 token creation
+openapi oauthv2 tokens create --scopes "smsv2"
+
+# OAuth v2 scopes
+openapi oauthv2 scopes list
 ```
 
 Supported HTTP method filters:
@@ -138,28 +150,30 @@ The CLI provides commands for services including:
 
 * `ai`
 * `automotive`
-* `cadastre`
-* `certified-email`
-* `chamber-of-commerce`
+* `bollettini`
+* `cap`
+* `catasto`
 * `company`
 * `docuengine`
 * `domains`
 * `esignature`
-* `exchange-rate`
+* `exchange`
 * `geocoding`
 * `invoice`
-* `massive-rem`
-* `paying-bills`
+* `marchetemporali`
+* `oauth`
+* `oauthv2`
+* `pec`
+* `pecmassiva`
 * `pdf`
-* `postal-service`
-* `real-estate`
+* `realestate`
 * `risk`
 * `sdi`
-* `sms`
-* `time-stamping`
+* `smsv2`
 * `trust`
+* `ufficiopostale`
 * `visengine`
-* `zip-codes`
+* `visurecamerali`
 
 Run:
 
